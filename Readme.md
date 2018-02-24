@@ -524,54 +524,7 @@ ps: `__metaclass__`是创建类时起作用.所以我们可以分别使用`__met
 
 **这个绝对常考啊.绝对要记住1~2个方法,当时面试官是让手写的.**
 
-### 1 使用`__new__`方法
-
-```python
-class Singleton(object):
-    def __new__(cls, *args, **kw):
-        if not hasattr(cls, '_instance'):
-            orig = super(Singleton, cls)
-            cls._instance = orig.__new__(cls, *args, **kw)
-        return cls._instance
-
-class MyClass(Singleton):
-    a = 1
-```
-
-### 2 共享属性
-
-创建实例时把所有实例的`__dict__`指向同一个字典,这样它们具有相同的属性和方法.
-
-```python
-
-class Borg(object):
-    _state = {}
-    def __new__(cls, *args, **kw):
-        ob = super(Borg, cls).__new__(cls, *args, **kw)
-        ob.__dict__ = cls._state
-        return ob
-
-class MyClass2(Borg):
-    a = 1
-```
-
-### 3 装饰器版本
-
-```python
-def singleton(cls, *args, **kw):
-    instances = {}
-    def getinstance():
-        if cls not in instances:
-            instances[cls] = cls(*args, **kw)
-        return instances[cls]
-    return getinstance
-
-@singleton
-class MyClass:
-  ...
-```
-
-### 4 import方法
+### 1 import方法
 
 作为python的模块是天然的单例模式
 
@@ -588,6 +541,93 @@ from mysingleton import my_singleton
 
 my_singleton.foo()
 
+```
+
+### 2 使用`__new__`方法
+
+```python
+class Singleton(object):
+    def __new__(cls, *args, **kw):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super(Singleton, cls).__new__(cls, *args, **kw)
+        return cls._instance
+
+class MyClass(Singleton):
+    a = 1
+```
+
+这里cls是变量名，此处代表传进来的类名。通过super调用Singleton的父类(超类)object，用父类的方法__new__创建cls的实例并存到cls的属性列表(其中类变量名_instance，值是类的实例地址)。如果_instances不存在于cls的属性列表中，则根据上述创建；否则直接返回cls._instance的值
+PS：
+cls = <class '__main__.MyClass'>
+cls._instance = <__main__.MyClass object at 0x10d9ce910>
+
+
+### 3 装饰器版本
+
+```python
+def singleton(cls, *args, **kw):
+    instances = {}
+    def getinstance():
+        if cls not in instances:
+            instances[cls] = cls(*args, **kw)
+        return instances[cls]
+    return getinstance
+    
+def singleton_another(cls):
+    instances = {}
+    @wraps(cls)
+    def getinstance(*args, **kw):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kw)
+        return instances[cls]
+    return getinstance
+    
+@singleton
+class MyClass:
+  a = 1
+```
+
+定义了一个装饰器 singleton，它返回了一个内部函数 getinstance，该函数会判断某个类是否在字典 instances 中，如果不存在，则会将 cls 作为 key，cls(*args, **kw) 作为 value 存到 instances 中，否则，直接返回 instances[cls]。
+
+PS：cls存的是类名，instances[cls]存的是类实例地址,即
+cls = <class '__main__.MyClass'>
+instances[cls] = <__main__.MyClass object at 0x10a8b9890>
+
+以@singleton为例
+1、执行singleton函数，即singleton(MyClass)；2、将执行完的 singleton 函数返回值赋值给@singleton下面的函数的函数名，即MyClass=singleton(MyClass)
+所以，想要执行 MyClass 函数时，就会执行 带@singleton的 MyClass 新函数，在 新函数singleton 内部先执行singleton的内容，再执行原来的 MyClass 函数，然后将 原来MyClass 函数的返回值 返回给了业务调用者。
+
+其中：
+cls是变量名,跟@classmethod无关,cls(*args, **kw)是一种写法,表示调用类变量名cls时可以接受任意传参,先后分别表示可变参数(list或tuple)和关键字参数(dict)
+singleton与singleton_another主要实现区别---@wraps(cls)。@singleton就是MyClass=singleton(MyClass),functools.wraps-也就是@wraps则可以将原函数对象的指定属性复制给包装函数对象,避免损失一些原本MyClass的功能信息。
+
+如果没有@wraps，MyClass 添加上 @singleton 修饰器相当于执行了一句MyClass = singleton(MyClass)，执行完这条语句之后，MyClass函数就变成了 getinstance 函数，丢掉了MyClass原本信息
+
+题外话:
+装饰器跟AOP(面向切面)有关,OOP则是面向对象
+
+wraps相关可以参考：
+https://segmentfault.com/a/1190000009398663
+http://python.jobbole.com/86687/
+
+装饰器可以参考：
+http://python.jobbole.com/86632/
+
+### 4 共享属性
+
+创建实例时把所有实例的`__dict__`指向同一个字典,这样它们具有相同的属性和方法.
+
+```python
+
+class Borg(object):
+    _state = {}
+    def __new__(cls, *args, **kw):
+        ob = super(Borg, cls).__new__(cls, *args, **kw)
+        ob.__dict__ = cls._state
+        return ob
+
+class MyClass2(Borg):
+    a = 1
 ```
 
 ## 17 Python中的作用域
