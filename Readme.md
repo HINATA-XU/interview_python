@@ -38,6 +38,9 @@
       * [26 Python的is](#26-python的is)
       * [27 read,readline和readlines](#27-readreadline和readlines)
       
+      遍历代码
+      http://blog.csdn.net/u010039733/article/details/47858189
+      
       MARK一下，read,readline和readlines只能处理小文件，而大文件就需要
       http://blog.csdn.net/a543402496/article/details/78747305
       
