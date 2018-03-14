@@ -37,14 +37,6 @@
       * [25 Python的List](#25-python的list)
       * [26 Python的is](#26-python的is)
       * [27 read,readline和readlines](#27-readreadline和readlines)
-      
-      遍历代码
-      http://blog.csdn.net/u010039733/article/details/47858189
-      
-      MARK一下，read,readline和readlines只能处理小文件，而大文件就需要
-      http://blog.csdn.net/a543402496/article/details/78747305
-      
-      
       * [28 Python2和3的区别](#28-python2和3的区别)
       * [29 super init](#29-super-init)
       * [30 range and xrange](#30-range-and-xrange)
@@ -803,6 +795,14 @@ is是对比地址,==是对比值
 * readline    读取下一行,使用生成器方法
 * readlines   读取整个文件到一个迭代器以供我们遍历
 
+遍历代码
+http://blog.csdn.net/u010039733/article/details/47858189
+
+MARK一下，read,readline和readlines只能处理小文件，而大文件就需要
+http://blog.csdn.net/a543402496/article/details/78747305
+
+    
+      
 ## 28 Python2和3的区别
 推荐：[Python 2.7.x 与 Python 3.x 的主要差异](http://chenqx.github.io/2014/11/10/Key-differences-between-Python-2-7-x-and-Python-3-x/)
 
