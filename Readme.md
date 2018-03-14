@@ -37,6 +37,11 @@
       * [25 Python的List](#25-python的list)
       * [26 Python的is](#26-python的is)
       * [27 read,readline和readlines](#27-readreadline和readlines)
+      
+      MARK一下，read,readline和readlines只能处理小文件，而大文件就需要
+      http://blog.csdn.net/a543402496/article/details/78747305
+      
+      
       * [28 Python2和3的区别](#28-python2和3的区别)
       * [29 super init](#29-super-init)
       * [30 range and xrange](#30-range-and-xrange)
